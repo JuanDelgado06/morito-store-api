@@ -7,7 +7,7 @@
   "description": "api de amazon-mevn",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node .",
     "dev": "nodemon index.js",
     "build": "node index.js",
     "publish": "now --prod"
