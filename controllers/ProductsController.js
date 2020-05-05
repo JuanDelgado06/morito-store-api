@@ -7,7 +7,7 @@ const vm = require('v-response');
 //Middleware para buscar un producto y guargarlo en el req.product
 const find =  async (req, res, next) => {
     try {
-        const reg = await Product.findOne({_id: req.params.id})
+        const reg = await Product.findOne({_id: req.params.id}).populate("owner category").exec();
         if (!reg) {
             return res.status(404)
                 .json(vm.ApiResponse(false, 404, 'No existe el producto'))
