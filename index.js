@@ -39,4 +39,7 @@ app.use('/api', ownerRoutes);
 
 const host = process.env.HOST|| '0.0.0.0';
 const port = process.env.PORT || 3003;
-app.listen(port, host, vm.log( tag= "Listing on port", `http://${host}:${port}`));
+// app.listen(port, host, vm.log( tag= "Listing on port", `http://${host}:${port}`));
+app.listen(port, host, () => {
+    console.log('Servidor ejecutandose en el puerto ' + `http://localhost:${port}`);
+})
