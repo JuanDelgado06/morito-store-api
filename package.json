@@ -2,7 +2,7 @@
   "name": "server-amazon-mevn",
   "version": "1.0.0",
   "engines": {
-    "node": "12.16.x"
+    "node": "12.16.3"
   },
   "description": "api de amazon-mevn",
   "main": "index.js",
