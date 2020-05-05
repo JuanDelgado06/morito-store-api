@@ -107,7 +107,8 @@ const update = async (req, res, next) => {
 }
 //Obtener todos los productos
 const index = async (req, res) => {
-    const reg = await Product.find();
+    //Con el metodo populate traemos toda la informacion de "owner" y "category" y no solo su id
+    const reg = await Product.find().populate("owner category").exec();
 
     if(!reg) {
         return res.status(404)
