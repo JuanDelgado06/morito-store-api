@@ -10,6 +10,7 @@ const dotenv = require('dotenv');
 const productRoutes = require('./routes/product');
 const categoryRoutes = require('./routes/category');
 const ownerRoutes = require('./routes/owner');
+const userRoutes = require('./routes/user');
 dotenv.config();
 
 //Iniciando nuestra instancia del servidor
@@ -33,9 +34,11 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.get("/", (req, res) => {
     res.send("Bienvenido a la api")
 })
+//Utilizando endpoints en nuestra app
 app.use('/api', productRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', ownerRoutes);
+app.use('/api', userRoutes);
 
 const host = process.env.HOST|| '0.0.0.0';
 const port = process.env.PORT || 3003;
