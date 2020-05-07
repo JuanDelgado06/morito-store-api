@@ -12,7 +12,7 @@
       "MONGODB_URI": "@mongodb-url",
       "CLOUD_NAME" : "@cloud_name",
       "API_KEY" : "@api_key",
-      "API_SECRET" : "@api_secret",
+      "API_SECRET" : "@api_secret"
     },
     "routes": [
         {
