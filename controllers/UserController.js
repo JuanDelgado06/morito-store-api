@@ -45,7 +45,7 @@ const create = async (req, res) => {
 }
 const profile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        let user = await User.findById(req.user.id).select('-password');
         res.json({user});
     } catch (e) {
         return res.status(500)

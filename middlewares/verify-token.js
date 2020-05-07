@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const vm = require('v-response');
 
 module.exports = (req, res, next) => {
-    const token = req.headers['x-access-token'] || req.headers["authorization"];
+    let token = req.headers['x-access-token'] || req.headers["authorization"];
     let checkBearer = "Bearer ";
     
     if(token) {
@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
             token = token.slice(checkBearer.length, token.length);
         }
         try {
-            const decoded = jwt.verify(token, process.env.PASS_TOKEN);
+            let decoded = jwt.verify(token, process.env.PASS_TOKEN);
             req.user = decoded.user;
             next();
         } catch (e) {
