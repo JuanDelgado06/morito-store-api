@@ -81,9 +81,36 @@ const login = async (req, res) => {
             .json(vm.ApiResponse(false, 500, "Ojito",e));
     }
 }
+const update = async (req, res) => {
+    try {
+        console.log("req.user", req.user);
+        let reg = await User.findOne({_id: req.user.id})
+        console.log(reg);
+
+        if(reg) {
+            if (req.body.name) reg.name = req.body.name;
+            if (req.body.email)  reg.email = req.body.email;
+            if (req.body.password) {
+                let newPassword = await bcrypt.hash(req.body.password, 10);
+                console.log(newPassword);
+                reg.password = newPassword
+            }
+
+            await reg.save();
+
+            return res.status(200)
+                .json(vm.ApiResponse(true, 200, "Perfil actualizado"))
+        } 
+    } catch (e) {
+        console.log(e);
+        return res.status(500)
+            .json(vm.ApiResponse(false, 500, "Ojito",e));
+    }
+}
 
 module.exports = {
     create,
     profile,
-    login
+    login,
+    update
 }

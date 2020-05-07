@@ -6,6 +6,8 @@ const verifyToken = require('../middlewares/verify-token');
 router.post('/auth/signup', userController.create);
 //Profile Route
 router.get('/auth/user', verifyToken, userController.profile);
+//Update route
+router.put('/auth/user', verifyToken, userController.update);
 //Login Route
 router.post('/auth/login', userController.login)
 
