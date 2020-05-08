@@ -19,6 +19,6 @@ module.exports = (req, res, next) => {
         }
     } else {
         return res.status(400)
-            .json(vm.ApiResponse(false, 400, "Sin token"))
+            .json(vm.ApiResponse(false, 400, "No tienes un token"))
     }
 }

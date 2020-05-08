@@ -8,7 +8,6 @@ const create = async (req, res) => {
         return res.status(400)
             .json(vm.ApiResponse(false, 400, 'Email y password son obligatorios'))
     } else {
-        // extraer email y password
         try {
             const { email } = req.body;
             //Comprobamos si el usuario existe
@@ -92,12 +91,9 @@ const update = async (req, res) => {
             if (req.body.email)  reg.email = req.body.email;
             if (req.body.password) {
                 let newPassword = await bcrypt.hash(req.body.password, 10);
-                console.log(newPassword);
                 reg.password = newPassword
             }
-
             await reg.save();
-
             return res.status(200)
                 .json(vm.ApiResponse(true, 200, "Perfil actualizado"))
         } 
