@@ -20,18 +20,18 @@ const find =  async (req, res, next) => {
 }   
 //Crear Producto
 const create = async (req, res, next) => {
-    if (!req.files || _.isEmpty(req.files) ) {
-        const reg = await Product.create(req.body);
-
-        if (!reg) {
-            return res.status(400)
-                .json(vm.ApiResponse(false, 400, 'No se envio ninguna información'))
-        }
-        req.product = reg;
-        return res.json(reg)
-    }
     const files = req.files;
     try {
+        if (!req.files || _.isEmpty(req.files) ) {
+            const reg = await Product.create(req.body);
+    
+            if (!reg) {
+                return res.status(400)
+                    .json(vm.ApiResponse(false, 400, 'No se envio ninguna información'))
+            }
+            req.product = reg;
+            return res.json(reg)
+        }
         let urls = [];
         let multiple = async (path) => await upload(path);
         for (const file of files) {
@@ -46,14 +46,12 @@ const create = async (req, res, next) => {
             let body = req.body
             let bodyw = _.extend(body, {photo_products: urls});
             let product = new Product(bodyw);
-            await product.save()
-                .then(productSaved => {
-                    req.product = productSaved
-                    return  res.json(productSaved)
-                }).catch(err => {
-                    console.log(err);
-                    return res.json(err);
-                })
+            const productSave = await product.save();
+
+            if (productSave) {
+                req.product = productSaved
+                return res.json(productSaved)
+            }
         }
         if (!urls) {
             return res.status(400)
@@ -108,13 +106,15 @@ const update = async (req, res, next) => {
 //Obtener todos los productos
 const index = async (req, res) => {
     //Con el metodo populate traemos toda la informacion de "owner" y "category" y no solo su id
-    const reg = await Product.find().populate("owner category").exec();
+    const reg = await Product.find()
+        .populate("owner category")
+        .populate("reviews", "rating")
+        .exec();
 
     if(!reg) {
         return res.status(404)
             .json(vm.ApiResponse(false, 404, "Sin registros"))
     }
-
     return res.status(200)
         .json(vm.ApiResponse(true, 200, "", reg))
 }

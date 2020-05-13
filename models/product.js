@@ -11,7 +11,26 @@ const ProductSchema = new Schema({
     },
     price: Number,
     stockQuantity: Number,
-    rating: [Number]
-});
+    reviews: [{type: Schema.Types.ObjectId, ref: 'Review'}]
+    }, 
+    {
+        toObject: { virtuals: true },
+        toJSON: { virtuals: true }
+    }
+);
+
+ProductSchema.virtual('averageRating').get(function () {
+    if (this.reviews.length > 0) {
+        let total = [];
+        const review = this.reviews;
+        for (const rev of review) {
+            total.push(rev.rating);
+        }
+        // console.log(total);
+        const sum = total.reduce((a, b) => a + b);
+        return sum / this.reviews.length;
+    }
+    return 0;
+})
 
 module.exports = mongoose.model("Product", ProductSchema);
