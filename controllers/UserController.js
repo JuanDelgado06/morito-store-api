@@ -1,4 +1,5 @@
-const User = require('../models/user.js');
+const User = require('../models/user');
+const Review = require('../models/review')
 const vm = require('v-response');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -49,6 +50,15 @@ const profile = async (req, res) => {
     } catch (e) {
         return res.status(500)
             .json(vm.ApiResponse(false, 500, "", e));
+    }
+}
+const reviews = async (req, res) => {
+    try {
+        const review = await Review.find({ user : req.user.id });
+        return res.status(200)
+            .json(vm.ApiResponse(true, 200, "Tus Reviews", review))
+    } catch (e) {
+        console.log(e);
     }
 }
 const login = async (req, res) => {
@@ -107,6 +117,7 @@ const update = async (req, res) => {
 module.exports = {
     create,
     profile,
+    reviews,
     login,
     update
 }

@@ -8,6 +8,7 @@ const vm = require('v-response');
 const create = async (req, res) => {
     const files = req.files;
     try {
+        
         if (!req.files || _.isEmpty(req.files) ) {
             let body = req.body;
             body.user = req.user.id;
@@ -63,8 +64,7 @@ const index = async (req, res) => {
     try {
         const producReviews = await Review.find({
             productId : req.params.productId
-        }).populate('user').exec();
-
+        }).populate("user", "name email").exec();
         return res.status(200)
             .json(vm.ApiResponse(true, 200, "", producReviews))
     } catch (e) {
@@ -75,5 +75,5 @@ const index = async (req, res) => {
 }
 module.exports = {
     create,
-    index
+    index,
 }

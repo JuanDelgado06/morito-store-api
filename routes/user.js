@@ -6,6 +6,8 @@ const verifyToken = require('../middlewares/verify-token');
 router.post('/auth/signup', userController.create);
 //Profile Route
 router.get('/auth/user', verifyToken, userController.profile);
+//GET request - Obtenemos las reviews de cada usuario
+router.get('/user/reviews', verifyToken, userController.reviews);
 //Update route
 router.put('/auth/user', verifyToken, userController.update);
 //Login Route
