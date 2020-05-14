@@ -1,14 +1,9 @@
 const Review = require('../models/review');
 const Product = require('../models/product');
-const _ = require('underscore')
-const fs = require('fs')
-const upload = require('../helpers/helper').upload;
 const vm = require('v-response');
 
 const create = async (req, res) => {
-    const files = req.files;
     try {
-        if (!req.files || _.isEmpty(req.files) ) {
             let body = req.body;
             body.user = req.user.id;
             body.productId = req.params.productId;
@@ -21,32 +16,6 @@ const create = async (req, res) => {
                 return res.status(200)
                     .json(vm.ApiResponse(true, 200, " Nueva reseña creada", reviewSave))
             }
-        }
-        //Si envia imagenes
-        let urls = [];
-        let multiple = async (path) => await upload(path);
-        for (const file of files) {
-            const {path} = file;
-            console.log("path", file);
-            
-            const newPath = await multiple(path);
-            urls.push(newPath);
-            fs.unlinkSync(path);
-        }
-        if (urls) {
-            let body = req.body
-            body.user = req.user.id;
-            body.productId = req.params.productId;
-            const bodyw = _.extend(body, {photo_review: urls});
-            const review = new Review(bodyw);
-
-            await Product.updateOne( {_id: req.params.productId}, { $push: { reviews : review._id} } ); 
-            const reviewSave = await review.save();
-            if (reviewSave) {
-                return res.status(200)
-                    .json(vm.ApiResponse(true, 200, " Nueva reseña creada", reviewSave))
-            }
-        }    
     } catch (e) {
         console.log("err :", e);
         return res.status(400)
@@ -66,7 +35,37 @@ const index = async (req, res) => {
                 .json(vm.ApiResponse(false, 400, "Ocurrio un error", e))
     }
 }
+const update = async (req, res) => {
+    try {
+        const upReview = req.body;
+        const review = await Review.findOne({_id : req.params.reviewId});
+        //Comprobar si existe
+        if(!review) return res.status(404).json(vm.ApiResponse(false, 404, "Review ni encontrado"));
+        //Comprobar si es el dueño del comentario
+        if(review.user._id.toString() !== req.user.id) return res.status(400).json(vm.ApiResponse(false, 400, "No tienes permiso para modificar este comentario"));
+        //Actualizar review
+        if(review) {
+            if (upReview.headline) review.headline = upReview.headline;
+            if (upReview.body) review.body = upReview.body;
+            if (upReview.rating) review.rating = upReview.rating;
+
+            await review.save();
+            return res.status(200)
+                .json(vm.ApiResponse(true, 200, "Perfil actualizado", review))
+        }    
+    } catch (e) {
+        console.log("err :", e);
+        return res.status(400)
+            .json(vm.ApiResponse(false, 400, "Ocurrio un error", e))
+    }
+}
+const destroy = async (req, res) => {
+    //Posible solucion buscar la review que se quiere eliminar y luego actualizar
+    // el producto eliminando del arreglo de reviews del producto
+}
 module.exports = {
     create,
     index,
+    update,
+    destroy
 }

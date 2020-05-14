@@ -5,9 +5,6 @@ const ReviewSchema = new Schema({
     headline: String, 
     body: String,
     rating: Number,
-    photo_review: {
-        type: []
-    },
     productId : { type: Schema.Types.ObjectId, ref: 'Product'},
     user: { type: Schema.Types.ObjectId, ref: 'User'}
 });
