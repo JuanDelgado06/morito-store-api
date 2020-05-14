@@ -8,7 +8,6 @@ const vm = require('v-response');
 const create = async (req, res) => {
     const files = req.files;
     try {
-        
         if (!req.files || _.isEmpty(req.files) ) {
             let body = req.body;
             body.user = req.user.id;
@@ -39,21 +38,15 @@ const create = async (req, res) => {
             body.user = req.user.id;
             body.productId = req.params.productId;
             const bodyw = _.extend(body, {photo_review: urls});
-
             const review = new Review(bodyw);
 
             await Product.updateOne( {_id: req.params.productId}, { $push: { reviews : review._id} } ); 
             const reviewSave = await review.save();
-
             if (reviewSave) {
                 return res.status(200)
                     .json(vm.ApiResponse(true, 200, " Nueva reseña creada", reviewSave))
             }
-        }
-        if (!urls) {
-            return res.status(400)
-                .json(vm.ApiResponse(false, 400, "Sin urls"))
-        }
+        }    
     } catch (e) {
         console.log("err :", e);
         return res.status(400)

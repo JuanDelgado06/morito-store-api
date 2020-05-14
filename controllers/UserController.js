@@ -28,7 +28,7 @@ const create = async (req, res) => {
                 }
             }
             let token = jwt.sign(payload, process.env.PASS_TOKEN, {
-                expiresIn: 3600 //Una hora
+                expiresIn: 86400 //Una hora
             })
             return res.json({
                 success: true,
@@ -73,7 +73,7 @@ const login = async (req, res) => {
                     }
                 }
                 let token = jwt.sign(payload, process.env.PASS_TOKEN, {
-                    expiresIn: 3600 //Una hora
+                    expiresIn: 86400 //Un DIa
                 })
                 res.status(200).json({ user, token });
             } else {
