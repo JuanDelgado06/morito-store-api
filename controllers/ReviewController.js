@@ -51,7 +51,7 @@ const update = async (req, res) => {
 
             await review.save();
             return res.status(200)
-                .json(vm.ApiResponse(true, 200, "Perfil actualizado", review))
+                .json(vm.ApiResponse(true, 200, "Perfil actualizado", review));
         }    
     } catch (e) {
         console.log("err :", e);
@@ -60,8 +60,23 @@ const update = async (req, res) => {
     }
 }
 const destroy = async (req, res) => {
-    //Posible solucion buscar la review que se quiere eliminar y luego actualizar
-    // el producto eliminando del arreglo de reviews del producto
+    try {
+        const review = await Review.findOne({_id : req.params.reviewId});
+        if(review.user.toString() !== req.user.id) return res.status(400).json(vm.ApiResponse(false, 400, "No tienes permiso para eliminar este comentario"));
+        
+        await Product.updateOne( 
+            {_id: review.productId}, 
+            { $pull: { reviews: review._id } }
+        ); 
+        await Review.findOneAndRemove({_id : req.params.reviewId});
+        return res.status(200)
+            .json(vm.ApiResponse(true, 200, "Comentario eliminado"));
+    } catch (e) {
+        console.log("err :", e);
+        return res.status(400)
+            .json(vm.ApiResponse(false, 400, "Ocurrio un error", e));
+    }
+
 }
 module.exports = {
     create,

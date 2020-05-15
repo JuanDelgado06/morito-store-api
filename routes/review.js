@@ -7,7 +7,9 @@ const reviewDuplicate = require('../middlewares/review-duplicate');
 router.post('/reviews/:productId', verifyToken, reviewDuplicate, reviewController.create);
 //GET request - Obtenemos todos las reseñas de un producto
 router.get('/reviews/:productId', reviewController.index);
-//Actualizar un review en especifico
+//Actualizar un review
 router.put('/reviews/update/:reviewId', verifyToken, reviewController.update);
+//Eliminar un review 
+router.delete('/reviews/remove/:reviewId', verifyToken, reviewController.destroy)
 
 module.exports = router;
